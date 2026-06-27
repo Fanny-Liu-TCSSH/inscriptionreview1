@@ -1,0 +1,405 @@
+:瀚墨流芳 ‧ 國文題辭大師(完整版):idiom_master_full.html
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瀚墨流芳 ‧ 國文題辭大師 (完整複習版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parchment: {
+                            DEFAULT: '#F9F6EE', // 宣紙白
+                            dark: '#F2EBD9',   // 舊書卷
+                        },
+                        cinnabar: {
+                            DEFAULT: '#9E2A2B', // 硃砂紅
+                            dark: '#7E1E20',
+                        },
+                        ink: {
+                            DEFAULT: '#1C1A16', // 徽墨黑
+                            light: '#403B35',
+                        },
+                        amberGold: '#B48A3F',   // 琥珀金
+                        jadeGreen: '#2D5A27',   // 翡翠綠
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', '"BiauKai"', '"DFKai-SB"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif TC', "BiauKai", "DFKai-SB", serif;
+            background-color: #FAF6EE;
+            background-image: radial-gradient(#F3ECE0 1px, transparent 0), radial-gradient(#F3ECE0 1px, transparent 0);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+        .ancient-border {
+            border: 4px double #B48A3F;
+            position: relative;
+        }
+        .ancient-border::before {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            border: 1px solid #B48A3F;
+            pointer-events: none;
+        }
+        .seal-stamp {
+            border: 2px solid #9E2A2B;
+            color: #9E2A2B;
+            font-weight: 900;
+            transform: rotate(-10deg);
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-ink flex flex-col items-center p-3 sm:p-6 select-none pb-24">
+
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+
+    <header class="w-full max-w-4xl bg-parchment-dark p-4 rounded-lg shadow-md mb-6 ancient-border flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-cinnabar text-parchment flex items-center justify-center font-black text-xl rounded-md shadow-inner border-2 border-amberGold">
+                題
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-black text-cinnabar tracking-wider">瀚墨流芳 ‧ 國文題辭大師</h1>
+                <p class="text-xs sm:text-sm text-ink-light font-semibold">Fanny 老師專屬互動平台 ── 32類完整大考題辭池</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="seal-stamp">凡妮墨寶</span>
+            <span class="seal-stamp text-jadeGreen border-jadeGreen">完整收錄</span>
+        </div>
+    </header>
+
+    <div class="w-full max-w-4xl grid grid-cols-3 gap-1 sm:gap-2 mb-6">
+        <button onclick="switchTab('library')" id="btn-library" class="tab-btn bg-cinnabar text-parchment font-bold py-3 px-1 sm:px-4 rounded-t-lg border-t-4 border-amberGold shadow-md transition-all text-sm sm:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+            <span>📖</span> <span>書香典藏 (全)</span>
+        </button>
+        <button onclick="switchTab('game')" id="btn-game" class="tab-btn bg-parchment-dark hover:bg-parchment text-ink-light font-semibold py-3 px-1 sm:px-4 rounded-t-lg border-t-4 border-transparent shadow-sm transition-all text-sm sm:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+            <span>⚔️</span> <span>雙璧配對 (隨機)</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="btn-quiz" class="tab-btn bg-parchment-dark hover:bg-parchment text-ink-light font-semibold py-3 px-1 sm:px-4 rounded-t-lg border-t-4 border-transparent shadow-sm transition-all text-sm sm:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
+            <span>📝</span> <span>會考練兵 (測驗)</span>
+        </button>
+    </div>
+
+    <main class="w-full max-w-4xl bg-white rounded-b-xl rounded-tr-xl shadow-lg border border-parchment-dark p-4 sm:p-6 min-h-[500px]">
+
+        <section id="panel-library" class="tab-panel flex flex-col gap-4">
+            <div class="flex flex-wrap justify-between items-center border-b border-amberGold/30 pb-3 gap-2">
+                <h2 class="text-lg font-bold text-cinnabar flex items-center gap-2">
+                    <span>📜</span> 題辭類別檢索 (全 32 類收錄)
+                </h2>
+                <div class="flex flex-wrap gap-1" id="lib-filter-container">
+                    <button onclick="filterLib('all')" class="lib-filter-btn px-3 py-1 text-xs rounded bg-cinnabar text-parchment font-bold">全部</button>
+                    <button onclick="filterLib('慶賀')" class="lib-filter-btn px-3 py-1 text-xs rounded bg-parchment-dark hover:bg-amberGold/20 font-bold">慶賀類</button>
+                    <button onclick="filterLib('哀輓')" class="lib-filter-btn px-3 py-1 text-xs rounded bg-parchment-dark hover:bg-amberGold/20 font-bold">哀輓類</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="library-grid"></div>
+        </section>
+
+        <section id="panel-game" class="tab-panel hidden flex flex-col gap-4">
+            <div class="flex flex-wrap justify-between items-center border-b border-amberGold/30 pb-3 gap-3">
+                <div>
+                    <h2 class="text-lg font-bold text-cinnabar flex items-center gap-2">
+                        <span>⚔️</span> 雙璧對決：隨機盲抽配對
+                    </h2>
+                    <p class="text-xs text-ink-light mt-1">從完整 32 類題辭庫中動態盲抽，每次重整都是全新挑戰！</p>
+                </div>
+                <div class="flex items-center gap-2 bg-parchment-dark p-1 rounded-md">
+                    <span class="text-xs font-bold px-1 text-ink-light">難度：</span>
+                    <button onclick="setDifficulty(4)" id="diff-4" class="diff-btn px-2 py-1 text-xs rounded bg-cinnabar text-white font-bold">初學 (4組)</button>
+                    <button onclick="setDifficulty(6)" id="diff-6" class="diff-btn px-2 py-1 text-xs rounded hover:bg-amberGold/20 font-bold">進階 (6組)</button>
+                    <button onclick="setDifficulty(8)" id="diff-8" class="diff-btn px-2 py-1 text-xs rounded hover:bg-amberGold/20 font-bold">大師 (8組)</button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center text-sm font-bold bg-parchment p-3 rounded border border-amberGold/20">
+                <div class="flex items-center gap-2"><span class="text-cinnabar">🔥 進度：</span><span id="game-progress">0 / 4 組</span></div>
+                <div class="flex items-center gap-2"><span class="text-cinnabar">⏳ 點擊：</span><span id="game-clicks">0 次</span></div>
+                <button onclick="initGame()" class="text-xs bg-amberGold text-white hover:bg-amberGold/80 px-3 py-1 rounded shadow-sm">🔀 重新抽牌</button>
+            </div>
+
+            <div class="flex flex-col gap-6 mt-2">
+                <div>
+                    <h3 class="text-xs font-bold text-amberGold mb-2 tracking-widest flex items-center gap-1"><span>●</span> 第一步：選擇場合類別</h3>
+                    <div id="game-categories" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+                </div>
+                <div class="border-t border-dashed border-amberGold/20 my-1"></div>
+                <div>
+                    <h3 class="text-xs font-bold text-amberGold mb-2 tracking-widest flex items-center gap-1"><span>●</span> 第二步：點擊對應題辭</h3>
+                    <div id="game-idioms" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+                </div>
+            </div>
+            <div id="game-feedback" class="text-center font-bold text-sm h-6 mt-4 transition-all duration-300"></div>
+        </section>
+
+        <section id="panel-quiz" class="tab-panel hidden flex flex-col gap-4">
+            <div class="flex justify-between items-center border-b border-amberGold/30 pb-3">
+                <h2 class="text-lg font-bold text-cinnabar flex items-center gap-2"><span>📝</span> 考場點兵 ‧ 實戰情境測驗</h2>
+                <div class="text-xs bg-parchment-dark py-1 px-3 rounded-full font-bold text-ink-light">題號：<span id="quiz-index">1</span> / <span id="quiz-total">10</span></div>
+            </div>
+            <div id="quiz-gameplay-container" class="flex flex-col gap-5">
+                <div class="bg-parchment border-l-4 border-cinnabar p-4 rounded-r-lg shadow-sm">
+                    <span class="inline-block bg-cinnabar text-parchment text-xs font-bold px-2 py-0.5 rounded mb-2">大考情境模擬題</span>
+                    <p id="quiz-question" class="text-sm sm:text-base font-bold leading-relaxed text-ink"></p>
+                </div>
+                <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                <div id="quiz-explanation-box" class="hidden bg-parchment-dark/60 p-4 rounded-lg border border-amberGold/20">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span id="explanation-badge" class="text-xs font-black text-white px-2 py-0.5 rounded">答案</span>
+                        <h4 class="font-bold text-sm text-cinnabar">凡妮老師深入剖析</h4>
+                    </div>
+                    <p id="quiz-explanation" class="text-xs sm:text-sm text-ink-light leading-relaxed"></p>
+                    <button onclick="nextQuiz()" class="mt-3 w-full sm:w-auto bg-cinnabar hover:bg-cinnabar-dark text-parchment font-bold text-xs py-2 px-5 rounded shadow float-right">下一題 ➔</button>
+                    <div class="clear-both"></div>
+                </div>
+            </div>
+            <div id="quiz-result-view" class="hidden flex flex-col items-center justify-center py-8 text-center">
+                <div class="w-24 h-24 bg-parchment border-4 border-cinnabar rounded-full flex items-center justify-center mb-4 shadow"><span class="text-cinnabar text-3xl font-black">印</span></div>
+                <h3 class="text-xl font-bold text-cinnabar">複習終了，成績揭曉！</h3>
+                <p class="text-2xl font-black text-amberGold my-3">得分率：<span id="final-score">0</span>% (<span id="final-correct">0</span> / 10 題)</p>
+                <div class="bg-parchment border border-amberGold/20 p-4 rounded-lg max-w-md w-full mb-6">
+                    <h4 class="font-bold text-sm mb-1 text-ink">📊 導師總評點擊：</h4>
+                    <p id="final-evaluation" class="text-xs text-ink-light leading-relaxed"></p>
+                </div>
+                <button onclick="restartQuiz()" class="bg-cinnabar hover:bg-cinnabar-dark text-parchment font-bold py-2.5 px-6 rounded shadow-md transition-all">🔄 重新挑戰</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-parchment-dark border-t border-amberGold/30 py-3 px-4 flex justify-between items-center shadow-lg z-40 max-w-4xl mx-auto rounded-t-lg">
+        <div class="text-xs text-ink-light font-bold flex items-center gap-1"><span>💡 複習秘訣：</span><span>隨機生成的牌組能有效打破死記順序的盲點！</span></div>
+        <button id="sound-btn" onclick="toggleSound()" class="flex items-center gap-1.5 bg-white hover:bg-parchment text-ink-light px-3 py-1.5 rounded-full border border-amberGold/30 text-xs font-bold shadow-sm">
+            <span id="sound-icon">🔊</span> <span id="sound-text">聲音開啟</span>
+        </button>
+    </footer>
+
+    <script>
+        // ================= 100% 完整收錄 32 個場合類別資料庫 =================
+        const idiomDatabase = [
+            { id: "m1", category: "訂婚文定", type: "慶賀", idioms: ["文定吉祥"], definition: "祝賀男女訂婚之喜。", notes: "【文定】古時稱訂婚為文定。[cite: 7, 21]" },
+            { id: "m2", category: "結婚嫁娶", type: "慶賀", idioms: ["天作之合", "百年好合", "珠聯璧合", "鸞鳳和鳴", "琴瑟和諧", "佳偶天成", "永結同心", "永浴愛河", "鳳凰于飛", "秦晉之好", "花開並蒂"], definition: "祝賀新婚美滿、夫妻和順。[cite: 8]" },
+            { id: "m3", category: "女子出嫁", type: "慶賀", idioms: ["之子于歸", "宜室宜家"], definition: "祝賀女子出嫁，能帶給夫家和順。[cite: 8, 22]" },
+            { id: "b1", category: "生育 (生子)", type: "慶賀", idioms: ["天賜麟兒", "弄璋誌喜", "麟趾呈祥"], definition: "祝賀生男孩。期望男嬰將來有如玉一般的品德。[cite: 9, 12, 22]" },
+            { id: "b2", category: "生育 (生女)", type: "慶賀", idioms: ["弄瓦誌喜", "明珠入掌", "喜得千金"], definition: "祝賀生女兒。期望女嬰將來能勝任女紅。[cite: 9, 12, 22]" },
+            { id: "s1", category: "祝壽 (男壽)", type: "慶賀", idioms: ["南極星輝", "培庭長青", "松柏長青", "齒德俱尊"], definition: "祝賀男性長輩生日。[cite: 10, 13]" },
+            { id: "s2", category: "祝壽 (女壽)", type: "慶賀", idioms: ["萱草長春", "慈竹長青", "瑤池春永"], definition: "祝賀女性長輩（母親）生日。[cite: 14]" },
+            { id: "s3", category: "祝壽 (雙壽)", type: "慶賀", idioms: ["椿萱並茂"], definition: "祝賀父母雙全且皆長壽健康。[cite: 16]" },
+            { id: "s4", category: "祝壽 (通用)", type: "慶賀", idioms: ["萬壽無疆", "福如東海", "壽比南山"], definition: "通用於男女長輩壽慶。[cite: 17]" },
+            { id: "c1", category: "比賽 (作文)", type: "慶賀", idioms: ["妙筆生花", "文採斐然", "文情並茂", "文章天成", "字字珠璣"], definition: "讚美作文或文學創作成就優異。[cite: 31, 38]" },
+            { id: "c2", category: "比賽 (書法)", type: "慶賀", idioms: ["入木三分", "秀麗遒勁", "筆走龍蛇", "鐵畫銀鉤"], definition: "讚美書法筆法剛勁有力、飛揚流暢。[cite: 32, 39]" },
+            { id: "c3", category: "比賽 (舞蹈)", type: "慶賀", idioms: ["舞姿曼妙", "舞藝超群", "飄逸生姿"], definition: "讚美舞蹈身段優美、技藝精湛。[cite: 33, 40]" },
+            { id: "c4", category: "比賽 (音樂)", type: "慶賀", idioms: ["玉潤珠圓", "繞梁三日", "新鶯出谷", "陽春白雪"], definition: "讚美歌唱或音樂演奏圓潤動聽、餘音不絕。[cite: 34, 40]" },
+            { id: "c5", category: "比賽 (戲劇)", type: "慶賀", idioms: ["惟妙惟肖", "演技精湛", "唱作俱佳"], definition: "讚美戲劇演員演技生動逼真、表現傑出。[cite: 34, 41]" },
+            { id: "c6", category: "比賽 (演講辯論)", type: "慶賀", idioms: ["口若懸河", "一鳴驚人", "議論風生", "辯才無礙"], definition: "讚美演講或辯論口才極佳、論理精闢。[cite: 35, 42]" },
+            { id: "c7", category: "運動會競賽", type: "慶賀", idioms: ["生龍活虎", "允文允武", "龍騰虎躍", "身手矯健"], definition: "用於體育競賽得獎，讚美選手身手非凡。[cite: 36, 43]" },
+            { id: "o1", category: "開業 (公司行號)", type: "慶賀", idioms: ["萬商雲集", "大展鴻圖", "駿業宏開"], definition: "祝賀公司、行號、店面開張大吉。[cite: 55]" },
+            { id: "o2", category: "開業 (醫院)", type: "慶賀", idioms: ["仁心仁術", "妙手回春", "杏林春暖", "華佗再世", "懸壺濟世"], definition: "祝賀醫院、診所開業，頌揚醫德與醫術。[cite: 56, 62, 63]" },
+            { id: "o3", category: "開業 (餐廳)", type: "慶賀", idioms: ["高朋滿座", "近悅遠來", "佳味餚香"], definition: "祝賀餐廳開張，高朋滿座、菜餚飄香。[cite: 64, 65]" },
+            { id: "o4", category: "開業 (旅館業)", type: "慶賀", idioms: ["賓至如歸", "近悅遠來"], definition: "祝賀旅館、飯店、旅宿業開業。[cite: 65, 66]" },
+            { id: "h1", category: "新居落成 (遷居)", type: "慶賀", idioms: ["美輪美奐", "華屋生輝", "堂構增輝", "喬遷誌喜"], definition: "祝賀他人搬遷新居，房屋高大華美。[cite: 61, 67, 69, 70]" },
+            { id: "h2", category: "遷居 (居室鄰里)", type: "慶賀", idioms: ["里仁為美", "德必有鄰"], definition: "讚美居住環境良好、鄰里和睦有仁德。[cite: 61, 68]" },
+            { id: "e1", category: "當選公職", type: "慶賀", idioms: ["桑梓之光", "眾望所歸", "為民喉舌", "造福鄉里", "實至名歸"], definition: "祝賀當選民意代表或公職，為民謀福。[cite: 71, 72]" },
+            { id: "ed1", category: "畢業 (前程)", type: "慶賀", idioms: ["前程似錦", "青雲有志", "鵬程萬里"], definition: "祝福畢業生前途無量、志向遠大。[cite: 73, 74]" },
+            { id: "ed2", category: "教育師資", type: "慶賀", idioms: ["百年樹人", "時雨春風", "春風化雨"], definition: "讚揚或贈送予教師，感念教化之恩。[cite: 75]" },
+            { id: "ed3", category: "學校校慶", type: "慶賀", idioms: ["作育英才", "濟濟多士", "桃李芬芳"], definition: "祝賀學校校慶，人才濟濟、培育眾多英才。[cite: 77, 78]" },
+            { id: "d1", category: "哀輓 (男喪)", type: "哀輓", idioms: ["遽返道山", "典型宛在", "德業長昭", "道範長存"], definition: "用於年長男性喪事，惋惜其突然逝世。[cite: 88, 89, 91, 92]" },
+            { id: "d2", category: "哀輓 (女喪)", type: "哀輓", idioms: ["母儀千古", "駕返瑤池", "淑德永昭"], definition: "用於女性喪事，讚揚女性溫婉淑德、可為母儀。[cite: 90, 93]" },
+            { id: "d3", category: "哀輓 (男女通用)", type: "哀輓", idioms: ["音容宛在", "福壽全歸", "五福全歸"], definition: "不分男女通用之高齡長者哀輓詞。[cite: 94, 95]" },
+            { id: "d4", category: "哀輓 (朋友)", type: "哀輓", idioms: ["痛失知音", "伊人宛在"], definition: "哀悼知己好友過世，痛失知心人。[cite: 96, 97]" },
+            { id: "d5", category: "哀輓 (師長)", type: "哀輓", idioms: ["教澤長存", "桃李興悲"], definition: "學生哀悼師長過世，學子（桃李）同悲。[cite: 98, 99]" },
+            { id: "d6", category: "哀輓 (政界)", type: "哀輓", idioms: ["國失賢良", "忠勤足式"], definition: "哀悼政界官員、民意代表逝世。[cite: 100, 101]" },
+            { id: "d7", category: "哀輓 (學界)", type: "哀輓", idioms: ["木壞山頹", "天喪斯文", "高山安仰"], definition: "哀悼學術界、教育界巨擘或文人學者逝世。[cite: 103, 104]" },
+            { id: "d8", category: "哀輓 (軍人)", type: "哀輓", idioms: ["國失良將", "痛失英才"], definition: "哀悼軍人、將領為國捐軀或過世。[cite: 106]" }
+        ];
+
+        // 情境庫（同前）
+        const quizPool = [
+            { scenario: "班導 Fanny 老師要送給畢業班學生的卡片上，不適合寫上以下哪一個題辭？", options: ["青雲有志", "前程似錦", "桃李興悲", "鵬程萬里"], answer: "桃李興悲", explanation: "「桃李興悲」是「學生哀悼師長逝世」之哀輓詞，不可用於喜慶畢業場合。[cite: 93, 99]" },
+            { scenario: "阿成得知好朋友的小吃店搬遷到更熱鬧的地段且擴大營業，上面最適合寫什麼？", options: ["里仁為美", "近悅遠來", "杏林春暖", "懸壺濟世"], answer: "近悅遠來", explanation: "「近悅遠來」用於餐飲與旅宿業，形容美味、服務周到吸引遠近賓客。[cite: 65]" },
+            { scenario: "阿輝的叔叔在縣議員選舉中高票當選，阿輝最適合寫上哪句話祝賀？", options: ["為民喉舌", "百年樹人", "字字珠璣", "入木三分"], answer: "為民喉舌", explanation: "民意代表代表民意發表意見，稱為「為民喉舌」。[cite: 72]" },
+            { scenario: "張老伯壽終正寢，前往弔唁時，禮金信封（輓額）上最適宜書寫哪一個詞彙？", options: ["遽返道山", "駕返瑤池", "痛失知音", "母儀千古"], answer: "遽返道山", explanation: "「遽返道山」專用於輓男性喪者；「駕返瑤池」與「母儀千古」用於女喪。[cite: 92, 93]" },
+            { scenario: "學校將於下個月舉辦八十週年大慶，最符合該場合的題辭是：", options: ["作育英才", "大展鴻圖", "華屋生輝", "妙手回春"], answer: "作育英才", explanation: "「作育英才」可用於祝賀校慶或贈予學校。[cite: 78]" },
+            { scenario: "阿豪代表班上參加全校運動會獲得冠軍，班導要在紅包袋上寫上一句讚美：", options: ["筆走龍蛇", "身手矯健", "妙筆生花", "惟妙惟肖"], answer: "身手矯健", explanation: "體育運動競賽得獎常用「身手矯健」或「生龍活虎」。[cite: 43]" },
+            { scenario: "陳老夫人的八十壽誕上，這時大廳祝壽大紅幛上，最合適的提字為：", options: ["南極星輝", "萱草長春", "痛失英才", "杏林春暖"], answer: "萱草長春", explanation: "古以「萱草」借指母親，故祝女性長輩壽誕用「萱草長春」。[cite: 14, 44]" },
+            { scenario: "王教授為學術界泰斗不幸病逝，學界人士前往哀悼時應使用哪一詞彙？", options: ["天喪斯文", "忠勤足式", "明珠入掌", "琴瑟和諧"], answer: "天喪斯文", explanation: "「天喪斯文」用於哀悼學術界、學者逝世。[cite: 104]" },
+            { scenario: "著名書法家舉辦個展，買下一幅真跡並現場致贈匾額賀禮，最適合寫：", options: ["鐵畫銀鉤", "陽春白雪", "文采斐然", "雅歌妙舞"], answer: "鐵畫銀鉤", explanation: "「鐵畫銀鉤」形容筆畫如鐵般剛勁，如銀般柔媚，專用於書法。[cite: 49]" },
+            { scenario: "林叔叔最近買下了新房子並裝潢完成，準備宴請親朋好友，紅包袋上寫哪一字最適當？", options: ["美輪美奐", "里仁為美", "駿業宏開", "文定吉祥"], answer: "美輪美奐", explanation: "「美輪美奐」指建築物高大華麗，常用於新居落成、遷居。[cite: 59]" }
+        ];
+
+        // 音效系統
+        class AudioSynth {
+            constructor() { this.ctx = null; this.enabled = true; }
+            init() { if (!this.ctx && this.enabled) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} } }
+            playClick() { this.init(); if (!this.ctx || !this.enabled) return; this.playTone(600, 'sine', this.ctx.currentTime, 0.05, 0.1); }
+            playSuccess() { this.init(); if (!this.ctx || !this.enabled) return; const now = this.ctx.currentTime; this.playTone(523.25, 'triangle', now, 0.2, 0.15); this.playTone(659.25, 'triangle', now + 0.08, 0.2, 0.15); this.playTone(783.99, 'triangle', now + 0.16, 0.3, 0.15); }
+            playError() { this.init(); if (!this.ctx || !this.enabled) return; const now = this.ctx.currentTime; this.playTone(220, 'sawtooth', now, 0.12, 0.1); this.playTone(196, 'sawtooth', now + 0.08, 0.25, 0.15); }
+            playFanfare() { this.init(); if (!this.ctx || !this.enabled) return; const now = this.ctx.currentTime; [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50].forEach((freq, idx) => { this.playTone(freq, 'triangle', now + idx * 0.1, 0.2, 0.12); }); }
+            playTone(freq, type, start, duration, volume) { try { const osc = this.ctx.createOscillator(); const gainNode = this.ctx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, start); gainNode.gain.setValueAtTime(volume, start); gainNode.gain.exponentialRampToValueAtTime(0.001, start + duration); osc.connect(gainNode); gainNode.connect(this.ctx.destination); osc.start(start); osc.stop(start + duration); } catch(e){} }
+        }
+        const synth = new AudioSynth();
+        function toggleSound() { synth.enabled = !synth.enabled; document.getElementById("sound-text").innerText = synth.enabled ? "聲音開啟" : "聲音關閉"; document.getElementById("sound-icon").innerText = synth.enabled ? "🔊" : "🔇"; if(synth.enabled) synth.playClick(); }
+
+        // 分頁切換
+        function switchTab(tabName) {
+            synth.playClick();
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = "tab-btn bg-parchment-dark hover:bg-parchment text-ink-light font-semibold py-3 px-1 sm:px-4 rounded-t-lg border-t-4 border-transparent shadow-sm transition-all text-sm sm:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2");
+            document.getElementById(`btn-${tabName}`).className = "tab-btn bg-cinnabar text-parchment font-bold py-3 px-1 sm:px-4 rounded-t-lg border-t-4 border-amberGold shadow-md transition-all text-sm sm:text-base flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2";
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+            if (tabName === 'game' && document.getElementById('game-categories').children.length === 0) initGame();
+        }
+
+        // 建立完整典藏庫 UI
+        function buildLibrary() {
+            const grid = document.getElementById("library-grid");
+            grid.innerHTML = "";
+            idiomDatabase.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "lib-card p-4 rounded-lg bg-parchment border border-amberGold/30 hover:border-cinnabar transition-all shadow-sm flex flex-col justify-between";
+                card.dataset.type = item.type;
+                let idiomsHTML = item.idioms.map(id => `<span class="inline-block bg-white text-ink text-xs font-semibold px-2 py-1 rounded border border-amberGold/20 m-0.5 tracking-wide">${id}</span>`).join("");
+                let notesHTML = item.notes ? `<div class="mt-2.5 pt-2 border-t border-dashed border-amberGold/20 text-[11px] text-ink-light whitespace-pre-line">${item.notes}</div>` : '';
+                card.innerHTML = `<div><div class="flex justify-between items-center mb-2"><span class="text-xs font-extrabold text-amberGold tracking-widest">【 ${item.category} 】</span><span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${item.type === '慶賀' ? 'bg-cinnabar/10 text-cinnabar' : 'bg-ink/10 text-ink'}">${item.type}類</span></div><div class="flex flex-wrap mb-2">${idiomsHTML}</div><p class="text-xs text-ink/80 leading-relaxed mt-1">${item.definition}</p></div>${notesHTML}`;
+                grid.appendChild(card);
+            });
+        }
+        function filterLib(categoryType) {
+            synth.playClick();
+            document.querySelectorAll(".lib-filter-btn").forEach(btn => btn.className = "lib-filter-btn px-3 py-1 text-xs rounded bg-parchment-dark hover:bg-amberGold/20 font-bold");
+            event.target.className = "lib-filter-btn px-3 py-1 text-xs rounded bg-cinnabar text-parchment font-bold";
+            document.querySelectorAll(".lib-card").forEach(card => card.classList.toggle("hidden", categoryType !== 'all' && card.dataset.type !== categoryType));
+        }
+
+        // ================= 核心：配對遊戲引擎 (動態抽題) =================
+        let gameDifficulty = 4;
+        let selectedCategoryCard = null;
+        let selectedIdiomCard = null;
+        let gameMatchedCount = 0;
+        let gameClickCount = 0;
+
+        function setDifficulty(num) { gameDifficulty = num; document.querySelectorAll(".diff-btn").forEach(btn => btn.className = "diff-btn px-2 py-1 text-xs rounded hover:bg-amberGold/20 font-bold"); document.getElementById(`diff-${num}`).className = "diff-btn px-2 py-1 text-xs rounded bg-cinnabar text-white font-bold"; initGame(); }
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+
+        function initGame() {
+            selectedCategoryCard = null; selectedIdiomCard = null; gameMatchedCount = 0; gameClickCount = 0;
+            document.getElementById("game-progress").innerText = `0 / ${gameDifficulty} 組`;
+            document.getElementById("game-clicks").innerText = `0 次`;
+            const fb = document.getElementById("game-feedback");
+            fb.innerText = "請點選一種類別與一個題辭！"; fb.className = "text-center font-bold text-sm h-6 mt-4 text-amberGold";
+
+            // 1. 先從 32 個完整大池中，盲抽 X 個不重複的場合類別
+            const shuffledPool = shuffleArray([...idiomDatabase]);
+            const selectedRoundData = shuffledPool.slice(0, gameDifficulty).map(item => {
+                // 2. 從該場合旗下的多個同義題辭中，再隨機盲抽一個，達到最大複習廣度
+                const randomIdiom = item.idioms[Math.floor(Math.random() * item.idioms.length)];
+                return { category: item.category, idiom: randomIdiom, id: item.id };
+            });
+
+            const categories = selectedRoundData.map(item => ({ text: item.category, pairId: item.id }));
+            const idioms = selectedRoundData.map(item => ({ text: item.idiom, pairId: item.id }));
+
+            shuffleArray(categories);
+            shuffleArray(idioms);
+
+            const catContainer = document.getElementById("game-categories");
+            const idiomContainer = document.getElementById("game-idioms");
+            catContainer.innerHTML = ""; idiomContainer.innerHTML = "";
+
+            categories.forEach(cat => {
+                const card = document.createElement("button");
+                card.className = "game-card bg-parchment hover:bg-parchment-dark text-ink border-2 border-amberGold/30 hover:border-amberGold rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight";
+                card.innerText = cat.text; card.dataset.pairId = cat.pairId; card.dataset.cardType = "category";
+                card.onclick = () => handleGameCardClick(card);
+                catContainer.appendChild(card);
+            });
+
+            idioms.forEach(idiom => {
+                const card = document.createElement("button");
+                card.className = "game-card bg-white hover:bg-parchment text-cinnabar border-2 border-amberGold/30 hover:border-cinnabar rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight tracking-wider";
+                card.innerText = idiom.text; card.dataset.pairId = idiom.pairId; card.dataset.cardType = "idiom";
+                card.onclick = () => handleGameCardClick(card);
+                idiomContainer.appendChild(card);
+            });
+        }
+
+        function handleGameCardClick(card) {
+            if (card.classList.contains('matched') || card.classList.contains('selected')) return;
+            synth.playClick(); gameClickCount++; document.getElementById("game-clicks").innerText = `${gameClickCount} 次`;
+            const type = card.dataset.cardType;
+
+            if (type === "category") {
+                document.querySelectorAll("#game-categories .game-card").forEach(c => { if (!c.classList.contains('matched')) c.className = "game-card bg-parchment hover:bg-parchment-dark text-ink border-2 border-amberGold/30 hover:border-amberGold rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight"; });
+                selectedCategoryCard = card; card.classList.add('selected');
+                card.className = "game-card bg-cinnabar text-parchment border-2 border-cinnabar rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight";
+            } else {
+                document.querySelectorAll("#game-idioms .game-card").forEach(c => { if (!c.classList.contains('matched')) c.className = "game-card bg-white hover:bg-parchment text-cinnabar border-2 border-amberGold/30 hover:border-cinnabar rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight tracking-wider"; });
+                selectedIdiomCard = card; card.classList.add('selected');
+                card.className = "game-card bg-cinnabar text-parchment border-2 border-cinnabar rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight tracking-wider";
+            }
+
+            if (selectedCategoryCard && selectedIdiomCard) {
+                const catId = selectedCategoryCard.dataset.pairId;
+                const idiomId = selectedIdiomCard.dataset.pairId;
+                const fb = document.getElementById("game-feedback");
+
+                if (catId === idiomId) {
+                    synth.playSuccess();
+                    selectedCategoryCard.className = "game-card matched bg-jadeGreen text-parchment border-2 border-jadeGreen opacity-60 cursor-default rounded-lg p-3 text-xs sm:text-sm font-bold shadow-inner h-16 flex items-center justify-center text-center leading-tight";
+                    selectedIdiomCard.className = "game-card matched bg-jadeGreen text-parchment border-2 border-jadeGreen opacity-60 cursor-default rounded-lg p-3 text-xs sm:text-sm font-bold shadow-inner h-16 flex items-center justify-center text-center leading-tight tracking-wider";
+                    selectedCategoryCard.classList.add('matched'); selectedIdiomCard.classList.add('matched');
+                    gameMatchedCount++; document.getElementById("game-progress").innerText = `${gameMatchedCount} / ${gameDifficulty} 組`;
+                    fb.innerText = "〖 合 ── 契合無雙，正確！〗"; fb.className = "text-center font-bold text-sm h-6 mt-4 text-jadeGreen";
+                    selectedCategoryCard = null; selectedIdiomCard = null;
+
+                    if (gameMatchedCount === gameDifficulty) { synth.playFanfare(); triggerGoldConfetti(); fb.innerText = "🎉 滿堂紅！恭喜全數完美配對過關！"; fb.className = "text-center font-black text-base h-6 mt-4 text-cinnabar animate-bounce"; }
+                } else {
+                    synth.playError(); fb.innerText = "❌ 錯契！再思量琢磨一番。"; fb.className = "text-center font-bold text-sm h-6 mt-4 text-red-600";
+                    const cCard = selectedCategoryCard; const iCard = selectedIdiomCard;
+                    cCard.classList.add('animate-bounce'); iCard.classList.add('animate-bounce');
+                    setTimeout(() => {
+                        if (cCard && !cCard.classList.contains('matched')) { cCard.className = "game-card bg-parchment hover:bg-parchment-dark text-ink border-2 border-amberGold/30 hover:border-amberGold rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight"; cCard.classList.remove('animate-bounce', 'selected'); }
+                        if (iCard && !iCard.classList.contains('matched')) { iCard.className = "game-card bg-white hover:bg-parchment text-cinnabar border-2 border-amberGold/30 hover:border-cinnabar rounded-lg p-3 text-xs sm:text-sm font-bold shadow-sm transition-all h-16 flex items-center justify-center text-center leading-tight tracking-wider"; iCard.classList.remove('animate-bounce', 'selected'); }
+                    }, 800);
+                    selectedCategoryCard = null; selectedIdiomCard = null;
+                }
+            }
+        }
+
+        // ================= 測驗引擎 =================
+        let quizIndex = 0; let quizScore = 0; let activeQuizPool = []; let optionSelected = false;
+        function initQuiz() { quizIndex = 0; quizScore = 0; activeQuizPool = shuffleArray([...quizPool]).slice(0, 10); document.getElementById("quiz-total").innerText = activeQuizPool.length; document.getElementById("quiz-gameplay-container").classList.remove("hidden"); document.getElementById("quiz-result-view").classList.add("hidden"); loadQuestion(); }
+        function loadQuestion() { optionSelected = false; document.getElementById("quiz-explanation-box").classList.add("hidden"); const qData = activeQuizPool[quizIndex]; document.getElementById("quiz-index").innerText = quizIndex + 1; document.getElementById("quiz-question").innerText = qData.scenario; const optionsContainer = document.getElementById("quiz-options"); optionsContainer.innerHTML = ""; qData.options.forEach(opt => { const btn = document.createElement("button"); btn.className = "quiz-opt-btn bg-white hover:bg-parchment text-ink border border-amberGold/30 hover:border-cinnabar rounded-lg p-4 text-xs sm:text-sm text-left font-bold transition-all shadow-sm flex items-center gap-3"; btn.innerHTML = `<span class="opt-badge w-6 h-6 rounded-full bg-parchment border border-amberGold/30 flex items-center justify-center text-[10px] text-ink font-bold">印</span> <span>${opt}</span>`; btn.onclick = () => selectOption(btn, opt); optionsContainer.appendChild(btn); }); }
+        function selectOption(btn, selectedVal) { if (optionSelected) return; optionSelected = true; const qData = activeQuizPool[quizIndex]; const correctVal = qData.answer; const expBox = document.getElementById("quiz-explanation-box"); const expBadge = document.getElementById("explanation-badge"); document.getElementById("quiz-explanation").innerText = qData.explanation; document.querySelectorAll(".quiz-opt-btn").forEach(b => { b.classList.add("opacity-60", "cursor-default"); if (b.children[1].innerText === correctVal) { b.className = "quiz-opt-btn bg-jadeGreen/10 border-2 border-jadeGreen text-jadeGreen rounded-lg p-4 text-xs sm:text-sm text-left font-bold transition-all shadow-inner flex items-center gap-3 opacity-100"; b.querySelector(".opt-badge").className = "opt-badge w-6 h-6 rounded-full bg-jadeGreen text-white flex items-center justify-center text-[10px] font-bold"; b.querySelector(".opt-badge").innerText = "✔"; } }); if (selectedVal === correctVal) { synth.playSuccess(); quizScore++; expBadge.innerText = "答對了"; expBadge.className = "text-xs font-black text-white px-2 py-0.5 rounded bg-jadeGreen"; } else { synth.playError(); btn.className = "quiz-opt-btn bg-cinnabar/10 border-2 border-cinnabar text-cinnabar rounded-lg p-4 text-xs sm:text-sm text-left font-bold transition-all shadow-inner flex items-center gap-3 opacity-100"; btn.querySelector(".opt-badge").className = "opt-badge w-6 h-6 rounded-full bg-cinnabar text-white flex items-center justify-center text-[10px] font-bold"; btn.querySelector(".opt-badge").innerText = "✘"; expBadge.innerText = "答錯了"; expBadge.className = "text-xs font-black text-white px-2 py-0.5 rounded bg-cinnabar"; } expBox.classList.remove("hidden"); }
+        function nextQuiz() { synth.playClick(); quizIndex++; if (quizIndex < activeQuizPool.length) { loadQuestion(); } else { showQuizResults(); } }
+        function showQuizResults() { document.getElementById("quiz-gameplay-container").classList.add("hidden"); const resultView = document.getElementById("quiz-result-view"); resultView.classList.remove("hidden"); const finalPercentage = Math.round((quizScore / activeQuizPool.length) * 100); document.getElementById("final-score").innerText = finalPercentage; document.getElementById("final-correct").innerText = quizScore; const evalBox = document.getElementById("final-evaluation"); if (finalPercentage === 100) { synth.playFanfare(); triggerGoldConfetti(); evalBox.innerText = "👑 「狀元及第」！真不愧是 Fanny 老師的小心肝學生！32類考點完全融會貫通，會考或學測題辭單元穩拿滿分！"; } else if (finalPercentage >= 80) { evalBox.innerText = "🎓 「榜眼高第」！功底扎實。只有少數刁鑽場合稍有混淆，再複習一下手寫筆記就能穩拿 A++！"; } else if (finalPercentage >= 60) { evalBox.innerText = "📜 「探花及第」！基礎達標。但對於哀輓類（如男喪、學界）的生難字詞辨識需要再加把勁。"; } else { evalBox.innerText = "✍️ 「童生磨礪」！仍有盲點。快去【書香典藏】仔細研讀 Fanny 老師精編的字詞注釋與典故，加油！"; } }
+        function restartQuiz() { synth.playClick(); initQuiz(); }
+
+        // ================= 金箔紙屑動畫特效 =================
+        const canvas = document.getElementById("confetti-canvas"); const ctx = canvas.getContext("2d"); let confetti = []; let animationFrameId = null;
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        function triggerGoldConfetti() { cancelAnimationFrame(animationFrameId); confetti = []; const colors = ['#B48A3F', '#D4AF37', '#F3E5AB', '#9E2A2B', '#E6C280']; for (let i = 0; i < 120; i++) { confetti.push({ x: Math.random() * canvas.width, y: Math.random() * -canvas.height - 20, r: Math.random() * 6 + 4, d: Math.random() * canvas.height, color: colors[Math.floor(Math.random() * colors.length)], tilt: Math.random() * 10 - 5, tiltAngleIncremental: Math.random() * 0.07 + 0.02, tiltAngle: 0 }); } animateConfetti(); }
+        function animateConfetti() { ctx.clearRect(0, 0, canvas.width, canvas.height); let remaining = false; confetti.forEach((p, idx) => { p.tiltAngle += p.tiltAngleIncremental; p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2; p.x += Math.sin(p.tiltAngle); p.tilt = Math.sin(p.tiltAngle - idx / 3) * 15; if (p.y <= canvas.height) remaining = true; ctx.beginPath(); ctx.lineWidth = p.r; ctx.strokeStyle = p.color; ctx.moveTo(p.x + p.tilt + p.r / 2, p.y); ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2); ctx.stroke(); }); if (remaining) animationFrameId = requestAnimationFrame(animateConfetti); else ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        window.onload = function() { buildLibrary(); initGame(); initQuiz(); switchTab('library'); };
+    </script>
+</body>
+</html>
